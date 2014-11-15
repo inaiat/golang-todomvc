@@ -1,6 +1,6 @@
 golang-todomvc
 ==============
 
-AngularJS TodoMVC with Go!
+AngularJS TodoMVC with Golang!
 
 Thanks to https://github.com/tastejs/todomvc
