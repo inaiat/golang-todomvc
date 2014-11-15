@@ -33,7 +33,7 @@ func PerformRequestJson(r http.Handler, method string, url string, p interface{}
 
 func TestAdd(t *testing.T) {
 	r := gin.New()
-	configServer(r)
+	configApi(r)
 	w, _ := PerformRequestJson(r, "POST", "/api/todos", Todo{Title: "Task1", Completed: false})
 	assert.Equal(t, http.StatusOK, w.Code)
 	w, _ = PerformRequestJson(r, "POST", "/api/todos", Todo{Title: "Task2", Completed: true})
@@ -42,7 +42,7 @@ func TestAdd(t *testing.T) {
 
 func TestCount(t *testing.T) {
 	r := gin.New()
-	configServer(r)
+	configApi(r)
 	w, _ := PerformRequestJson(r, "GET", "/api/todos", Todo{})
 	todos := []Todo{}
 	json.Unmarshal(w.Body.Bytes(), &todos)

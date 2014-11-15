@@ -85,8 +85,7 @@ func setupDb(pathDb string, eraseDataBase bool) {
 	todoCol = myDB.Use("todo")
 }
 
-func configServer(engine *gin.Engine) {
-	engine.Static("/todo", "public")
+func configApi(engine *gin.Engine) {
 	api := engine.Group("/api")
 	{
 		api.GET("/", func(c *gin.Context) { c.Writer.WriteHeader(200) })
@@ -100,6 +99,7 @@ func configServer(engine *gin.Engine) {
 func main() {
 	setupDb("/tmp/TodoDatabase", false)
 	r := gin.Default()
-	configServer(r)
+	r.Static("/todo", "public")
+	configApi(r)
 	r.Run(":8080")
 }
