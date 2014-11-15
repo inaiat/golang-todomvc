@@ -9,8 +9,6 @@ import (
 	"strconv"
 )
 
-const erase_db = false
-
 var todoCol *db.Col
 
 type Todo struct {
@@ -65,10 +63,10 @@ func DeleteTodo(c *gin.Context) {
 	}
 }
 
-func main() {
-	myDBDir := "/tmp/TodoDatabase"
+func setupDb(pathDb string, eraseDataBase bool) {
+	myDBDir := pathDb
 
-	if erase_db {
+	if eraseDataBase {
 		os.RemoveAll(myDBDir)
 		defer os.RemoveAll(myDBDir)
 	}
@@ -78,18 +76,18 @@ func main() {
 		panic(err)
 	}
 
-	if erase_db {
+	if eraseDataBase {
 		if err := myDB.Create("todo"); err != nil {
 			panic(err)
 		}
 	}
 
 	todoCol = myDB.Use("todo")
+}
 
-	r := gin.Default()
-	r.Static("/todo", "public")
-
-	api := r.Group("/api")
+func configServer(engine *gin.Engine) {
+	engine.Static("/todo", "public")
+	api := engine.Group("/api")
 	{
 		api.GET("/", func(c *gin.Context) { c.Writer.WriteHeader(200) })
 		api.POST("/todos", NewTodo)
@@ -97,6 +95,11 @@ func main() {
 		api.DELETE("/todos/:id", DeleteTodo)
 		api.PUT("/todos/:id", UpateTodo)
 	}
+}
 
+func main() {
+	setupDb("/tmp/TodoDatabase", false)
+	r := gin.Default()
+	configServer(r)
 	r.Run(":8080")
 }
